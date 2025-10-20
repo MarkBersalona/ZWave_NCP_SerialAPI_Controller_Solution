@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ASCII"?>
+<device:XMLDevice xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:device="http://www.silabs.com/ss/hwconfig/document/device.ecore" name="pin_tool.EFR32ZG23B020F512IM48" partId="mcu.arm.efr32.zg23.efr32zg23b020f512im48" contextId="com.silabs.sdk.stack.sisdk:2025.6.2._-1463232186">
+  <mode name="DefaultMode">
+    <property object="DefaultMode" propertyId="mode.diagramLocation" value="100, 100"/>
+    <property object="EUSART0" propertyId="ABModule.selectedRequirement" value="eusart%T%SL_IOSTREAM_EUSART_DEBUG%T%sl_iostream_eusart_debug_config.h"/>
+    <property object="EUSART0" propertyId="ABPeripheral.included" value="true"/>
+    <property object="GPIO" propertyId="ABModule.selectedRequirement" value="gpio%T%SL_DEBUG%T%sl_debug_swo_config.h"/>
+    <property object="GPIO" propertyId="ABPeripheral.included" value="true"/>
+    <property object="PA08" propertyId="pin.name" value=""/>
+    <property object="PA09" propertyId="pin.name" value=""/>
+    <property object="PORTIO" propertyId="portio.eusart0.location.rx" value="9"/>
+    <property object="PORTIO" propertyId="portio.eusart0.location.tx" value="8"/>
+    <property object="PORTIO" propertyId="portio.usart0.enable.tx" value="Enabled"/>
+    <property object="PORTIO" propertyId="portio.usart0.location.cts" value="10"/>
+    <property object="PORTIO" propertyId="portio.usart0.location.rx" value="9"/>
+    <property object="PORTIO" propertyId="portio.usart0.location.tx" value="8"/>
+    <property object="USART0" propertyId="ABModule.selectedRequirement" value="usart%T%SERIAL_API%T%serial_api_config.h"/>
+    <property object="USART0" propertyId="ABPeripheral.included" value="true"/>
+  </mode>
+  <modeTransition>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.source" value="RESET"/>
+    <property object="RESET &#x2192; DefaultMode" propertyId="modeTransition.target" value="DefaultMode"/>
+  </modeTransition>
+</device:XMLDevice>

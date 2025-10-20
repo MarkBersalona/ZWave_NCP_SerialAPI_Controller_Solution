@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="uc.module.setup.ProjectPostBuild.com.silabs.ss.framework.project.toolchain.core.default#com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:12.2.1.20221205.gcc" propertyScope="project">
+  <postbuildStep>$(commander) postbuild &quot;$(project)/$(projectName).slpb&quot; --parameter build_dir:&quot;$(builddir)&quot; &amp;&amp; $(commander) postbuild &quot;$(project)//ZWave_NCP_SerialAPI_Controller_Solution.slpb&quot;</postbuildStep>
+</project>
