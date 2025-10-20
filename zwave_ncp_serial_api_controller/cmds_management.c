@@ -14,6 +14,7 @@
 #include <ZAF_version.h>
 #include <string.h>
 #include <zpal_misc.h>
+#include "zpal_log.h"
 
 #ifdef ZW_CONTROLLER
 #include <ZW_controller_api.h>
@@ -211,6 +212,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
   switch (pInputBuffer[0]) {
     /* Report which SerialAPI Setup commands are supported beside the SERIAL_API_SETUP_CMD_SUPPORTED */
     case SERIAL_API_SETUP_CMD_SUPPORTED:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_SUPPORTED\r\n", __FUNCTION__);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_SUPPORTED */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_SUPPORTED |
        *              (SERIAL_API_SETUP_CMD_TX_STATUS_REPORT + SERIAL_API_SETUP_CMD_RF_REGION_GET + SERIAL_API_SETUP_CMD_RF_REGION_SET +
@@ -253,6 +255,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       break;
 
     case SERIAL_API_SETUP_CMD_TX_STATUS_REPORT:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_STATUS_REPORT\r\n", __FUNCTION__);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_TX_STATUS_REPORT | EnableTxStatusReport */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_TX_STATUS_REPORT | cmdRes */
       if (SERIAL_API_SETUP_CMD_TX_STATUS_REPORT_CMD_LENGTH_MIN <= inputLength) {
@@ -266,6 +269,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
 
     /* Report RF region configuration */
     case SERIAL_API_SETUP_CMD_RF_REGION_GET:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_RF_REGION_GET\r\n", __FUNCTION__);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_RF_REGION_GET */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_RF_REGION_GET | rfRRegion */
       if (false == ReadApplicationRfRegion(&rfRegion)) {
@@ -277,6 +281,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
 
     /* Set RF region configuration */
     case SERIAL_API_SETUP_CMD_RF_REGION_SET:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_RF_REGION_SET\r\n", __FUNCTION__);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_RF_REGION_SET | rfRegion */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_RF_REGION_SET | cmdRes */
       if (SERIAL_API_SETUP_CMD_RF_REGION_SET_CMD_LENGTH_MIN <= inputLength) {
@@ -294,6 +299,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     {
       uint8_t supported_region_count = 0;
       uint8_t region_count_index = i;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_GET_SUPPORTED_REGION\r\n", __FUNCTION__);
       i++; //skip suported region count, move to first region value;
       for (rfRegion = REGION_2CH_FIRST; rfRegion < REGION_2CH_END; rfRegion++) {
         if (true == isRfRegionValid(rfRegion)) {
@@ -316,6 +322,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     case SERIAL_API_SETUP_CMD_GET_REGION_INFO:
     {
       uint8_t info_idx;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_GET_REGION_INFO\r\n", __FUNCTION__);
       //search for the requested region in the regions_info table.
       for (info_idx = 0; info_idx < REGIONS_INFO_COUNT; info_idx++) {
         if (regions_info[info_idx].region == pInputBuffer[SAPI_SETUP_GET_REGION_INFO_RX_IDX_REGION]) {
@@ -337,6 +344,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     {
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iAdjust;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET\r\n", __FUNCTION__);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_SET | NormalTxPowerLevel | Measured0dBmPower
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_SET | cmdRes
@@ -358,6 +366,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     }
 
     case SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET\r\n", __FUNCTION__);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_GET
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_GET | NormalTxPowerLevel | Measured0dBmPower
@@ -391,6 +400,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iAdjust;
       zpal_tx_power_t iTxPowerMaxSupported;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_16_BIT\r\n", __FUNCTION__);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_SET | NormalTxPowerLevel (MSB) |NormalTxPowerLevel (LSB) | Measured0dBmPower (MSB)| Measured0dBmPower (LSB)
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_SET | cmdRes
@@ -417,6 +427,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     }
 
     case SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT\r\n", __FUNCTION__);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_GET_2
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_GET_2 | NormalTxPowerLevel (16bit) | Measured0dBmPower (16bit)
@@ -429,15 +440,18 @@ void func_id_serial_api_setup(uint8_t inputLength,
       break;
 
     case SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE\r\n", __FUNCTION__);
       pOutputBuffer[i++] = (uint8_t)ZAF_getAppHandle()->pNetworkInfo->MaxPayloadSize;
       break;
 
     case SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE\r\n", __FUNCTION__);
       pOutputBuffer[i++] = (uint8_t)ZAF_getAppHandle()->pLongRangeInfo->MaxLongRangePayloadSize;
       break;
 
     /* Set the Node ID base type */
     case SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET\r\n", __FUNCTION__);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET | type */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET | cmdRes */
       nodeIdBaseType = SERIAL_API_SETUP_NODEID_BASE_TYPE_DEFAULT;
@@ -460,6 +474,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iTxPowerMaxSupported;
 
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_SET\r\n", __FUNCTION__);
       if (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_CMD_LENGTH_MIN <= inputLength) {
         iTxPower = (zpal_tx_power_t)GET_16BIT_VALUE(&pInputBuffer[1]);
         iTxPowerMaxSupported = GetMaxSupportedTxPower();
@@ -484,6 +499,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
        */
     {
       int16_t readout = 0;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET\r\n", __FUNCTION__);
       ReadApplicationMaxLRTxPwr(&readout);
       pOutputBuffer[i++] = (uint8_t)((readout >> 8) & 0xFF);
       pOutputBuffer[i++] = (uint8_t)(readout & 0xFF);
@@ -491,6 +507,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     break;
 
     default:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (unknown/unsupported)\r\n", __FUNCTION__, pInputBuffer[0]);
       /* HOST->ZW: [SomeUnsupportedCmd] | [SomeData] */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_UNSUPPORTED | [SomeUnsupportedCmd] */
       /* All other commands are unsupported */

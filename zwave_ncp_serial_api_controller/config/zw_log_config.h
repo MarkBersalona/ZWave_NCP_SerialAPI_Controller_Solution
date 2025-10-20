@@ -22,7 +22,7 @@
 // <o ZW_LOG_BUFFER_SIZE> Size of the log buffer <1..255:1> <f.d>
 // <i> Size (in bytes) of the buffer reserved for log messages
 // <i> Default: 96
-#define ZW_LOG_BUFFER_SIZE  96
+#define ZW_LOG_BUFFER_SIZE  200
 
 // <q ZW_LOG_DISPLAY_LEVEL> Display log level
 // <i> If enabled, log messages will be prefixed with their level
