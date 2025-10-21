@@ -13,6 +13,7 @@
 #include "zpal_nvm.h"
 #include "serialapi_file.h"
 #include "ZAF_nvm_app.h"
+#include "zpal_log.h"
 
 #define DCDC_CONFIG_UNALTERED   0xff
 
@@ -59,6 +60,7 @@ void SerialAPI_hw_psu_init(void)
 ZW_ADD_CMD(FUNC_ID_GET_DCDC_CONFIG)
 {
   uint8_t retVal = GetDcDcConfig();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: GetDcDcConfig() returned 0x%02X\r\n", __FUNCTION__, retVal);
   DoRespond(retVal);
 }
 

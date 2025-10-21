@@ -901,6 +901,8 @@ ZW_ADD_CMD(FUNC_ID_MEMORY_GET_ID)
 
   node_id = ZAF_GetNodeID();
   home_id = ZAF_GetHomeID();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: home_id = 0x%08X \r\n", __FUNCTION__, home_id);
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: node_id =     0x%04X \r\n", __FUNCTION__, node_id);
 
   /*  */
   compl_workbuf[i++] = (uint8_t) ((home_id & 0xff000000) >> 24);
@@ -1287,6 +1289,7 @@ ZW_ADD_CMD(FUNC_ID_ZW_GET_NODE_PROTOCOL_INFO)
   /* bNodeID */
   volatile uint8_t offset = 0;
   node_id_t nodeId = (node_id_t)GET_NODEID(&frame->payload[0], offset);
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: nodeId = 0x%04X\r\n", __FUNCTION__, nodeId);
   GetNodeInfo(nodeId, (t_ExtNodeInfo *)compl_workbuf);
   _Static_assert(sizeof(t_ExtNodeInfo) == 7, "STATIC_ASSERT_FAILED_size_mismatch");
   DoRespond_workbuf(7);
@@ -1406,18 +1409,21 @@ static void AddNodeDskToNetwork(uint8_t mode, const uint8_t* pDsk, void (*pCallB
 ZW_ADD_CMD(FUNC_ID_ZW_ADD_NODE_TO_NETWORK)
 {
   /* HOST->ZW: mode | funcID */
-  /* HOST->ZW: mode = 0x07 | funcID | DSK[0] | DSK[1] | DSK[2] | DSK[3] | DSK[4] | DSK[5] | DSK[6] | DSK[7] */
+  /* HOST->ZW: mode = 0x4A | funcID | DSK[0] | DSK[1] | DSK[2] | DSK[3] | DSK[4] | DSK[5] | DSK[6] | DSK[7] */
   if (ZW_NodeManagementRunning() && ((frame->payload[0] & ADD_NODE_MODE_MASK) != ADD_NODE_STOP)) {
     // A previous node management request is still in progress. Drop this request and go back to idle state.
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: *** WARNING *** A previous node management request is still in progress. Drop this request and go back to idle state.\r\n", __FUNCTION__);
     set_state_and_notify(stateIdle);
     return;
   }
   SetupNodeManagement(frame, 1);
   if ((frame->payload[0] & ADD_NODE_MODE_MASK) == ADD_NODE_HOME_ID) {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: (frame->payload[0] & ADD_NODE_MODE_MASK) == ADD_NODE_HOME_ID\r\n", __FUNCTION__);
     AddNodeDskToNetwork(frame->payload[0],
                         &frame->payload[2],
                         (funcID_ComplHandler_ZW_NodeManagement != 0) ? &ZCB_ComplHandler_ZW_NodeManagement : NULL);
   } else {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: frame->payload[0] == 0x%02X\r\n", __FUNCTION__, frame->payload[0]);
     AddNodeToNetwork(frame->payload[0],
                      (funcID_ComplHandler_ZW_NodeManagement != 0) ? &ZCB_ComplHandler_ZW_NodeManagement : NULL);
   }
@@ -2005,6 +2011,7 @@ ZW_ADD_CMD(FUNC_ID_ZW_GET_SUC_NODE_ID)
   node_id_t suc_node_id;
 
   suc_node_id = ZAF_GetSucNodeId();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Suc Node ID = 0x%04X\r\n", __FUNCTION__, (uint16_t)suc_node_id);
 
   if (SERIAL_API_SETUP_NODEID_BASE_TYPE_16_BIT == nodeIdBaseType) {
     compl_workbuf[0] = (uint8_t)(suc_node_id >> 8);      // MSB
@@ -2305,7 +2312,20 @@ ZW_ADD_CMD(FUNC_ID_ZW_GET_VERSION)
   assert(iCharacters == 11); // Serial API must deliver 13 bytes reply. 11 byte string (no zero termination) followed by zero and 1 byte lib type
                              // We use SNPRINTF zero termination to produce the zero.
   _Static_assert(sizeof(compl_workbuf) >= 13, "STATIC_ASSERT_compl_workbuf_to_small");
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: version is >>%s<<\r\n", __FUNCTION__, compl_workbuf);
   compl_workbuf[12] = protocol_info->eLibraryType;
+  switch (compl_workbuf[12])
+  {
+    case ELIBRARYTYPE_CONTROLLER:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: library type = 0x%02X (ELIBRARYTYPE_CONTROLLER)\r\n", __FUNCTION__, ELIBRARYTYPE_CONTROLLER);
+      break;
+    case ELIBRARYTYPE_SLAVE:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: library type = 0x%02X (ELIBRARYTYPE_SLAVE)\r\n", __FUNCTION__, ELIBRARYTYPE_SLAVE);
+      break;
+    default:
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: library type = 0x%02X (unknown or deprecated)\r\n", __FUNCTION__, compl_workbuf[12]);
+      break;
+  }
   DoRespond_workbuf(13);
 }
 #endif
@@ -2614,6 +2634,7 @@ ZW_ADD_CMD(FUNC_ID_ZW_IS_VIRTUAL_NODE)
   /* node */
   node_id_t nodeId = (node_id_t)frame->payload[0];
   const uint8_t retVal = IsNodeVirtual(nodeId);
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: nodeId 0x%04X: IsNodeVirtual() returned 0x%02X\r\n", __FUNCTION__, nodeId, retVal);
   DoRespond(retVal);
 }
 #endif
@@ -2706,6 +2727,7 @@ ZW_ADD_CMD(FUNC_ID_ENABLE_RADIO_PTI)
 ZW_ADD_CMD(FUNC_ID_GET_RADIO_PTI)
 {
   const uint8_t retVal = GetPTIConfig();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: GetPTIConfig() returned 0x%02X\r\n", __FUNCTION__, retVal);
   DoRespond(retVal);
 }
 #endif

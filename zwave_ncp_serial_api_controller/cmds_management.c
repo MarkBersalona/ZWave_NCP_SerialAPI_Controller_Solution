@@ -77,6 +77,7 @@ void func_id_serial_api_get_init_data(__attribute__((unused)) uint8_t inputLengt
 {
   *pOutputLength = 5;
   pOutputBuffer[0] = SERIAL_API_VER;
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[00] = 0x%02X (SERIAL_API_VER)\r\n", __FUNCTION__, SERIAL_API_VER);
   pOutputBuffer[1] = 0; /* Flag byte - default: controller api, no timer support, no primary, no SUC */
 #ifdef ZW_CONTROLLER
   if (!IsPrimaryController()) {
@@ -85,9 +86,11 @@ void func_id_serial_api_get_init_data(__attribute__((unused)) uint8_t inputLengt
   if (GetControllerCapabilities() & CONTROLLER_IS_SUC) { /* if (ZW_IS_SUC_ACTIVE()) */
     pOutputBuffer[1] |= GET_INIT_DATA_FLAG_IS_SUC; /* Set SUC bit if active */
   }
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[01] = 0x%02X (get initial capabilities of this CONTROLLER)\r\n", __FUNCTION__, pOutputBuffer[1]);
 
   /* compl_workbuf[1] is already set to controller api*/
   pOutputBuffer[2] = ZW_MAX_NODES / 8; /* node bitmask length */
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[02] = 0x%02X (MAX_NODES/8; should be 29 or 0x1D)\r\n", __FUNCTION__, pOutputBuffer[2]);
 
   /* Clear the buffer */
   memset(pOutputBuffer + 3, 0, ZW_MAX_NODES / 8);
@@ -97,8 +100,11 @@ void func_id_serial_api_get_init_data(__attribute__((unused)) uint8_t inputLengt
   Get_included_nodes(pOutputBuffer + 3);
 
   pOutputBuffer[3 + (ZW_MAX_NODES / 8)] = zpal_get_chip_type();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[%02d] = 0x%02X (zpal_get_chip_type)\r\n", __FUNCTION__, 3 + (ZW_MAX_NODES / 8), pOutputBuffer[3 + (ZW_MAX_NODES / 8)]);
   pOutputBuffer[4 + (ZW_MAX_NODES / 8)] = zpal_get_chip_revision();
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[%02d] = 0x%02X (zpal_get_chip_revision)\r\n", __FUNCTION__, 4 + (ZW_MAX_NODES / 8), pOutputBuffer[4 + (ZW_MAX_NODES / 8)]);
   *pOutputLength += (ZW_MAX_NODES / 8);
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: *pOutputLength    = 0x%02X (output length)\r\n", __FUNCTION__, *pOutputLength);
   assert(*pOutputLength <= 34);  // Elsewhere, like in zwapi_init.c, the pOutputBuffer is hardcoded to 34 bytes in lenght.
 #else
   pOutputBuffer[1] |= GET_INIT_DATA_FLAG_SLAVE_API; /* Flag byte */
@@ -151,18 +157,31 @@ void func_id_serial_api_get_LR_nodes(__attribute__((unused)) uint8_t inputLength
   uint8_t bitmaskOffset = pInputBuffer[0];
   *pOutputLength = 3 + MAX_LR_NODEMASK_LENGTH;
   pOutputBuffer[0] = 0; // MORE_NODES - No more nodes for now.
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[00] = 0x%02X (MORE_NODES - No more nodes for now)\r\n", __FUNCTION__, pOutputBuffer[0]);
   // Allowed values for bitmaskOffset are 0, 1, 2, 3
   if (bitmaskOffset > 3) {
     bitmaskOffset = 3;
   }
   pOutputBuffer[1] = bitmaskOffset;
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[01] = 0x%02X (bitmask offset)\r\n", __FUNCTION__, pOutputBuffer[1]);
 
   // Clean output buffer first
   memset(pOutputBuffer + 3, 0, MAX_LR_NODEMASK_LENGTH);
 
   pOutputBuffer[2] = MAX_LR_NODEMASK_LENGTH; // BITMASK_LEN hardcoded
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[02] = 0x%02X (MAX_LR_NODEMASK_LENGTH)\r\n", __FUNCTION__, pOutputBuffer[2]);
   if (bitmaskOffset < 1) {
     Get_included_lr_nodes(pOutputBuffer + 3);
+    /////////////////////////////////////////////////////////////////////////////////////
+    /// TEST MAB 2025.10.21
+    /// Display the bitmask array
+    uint8_t* plucBitmaskArray = pOutputBuffer + 3;
+    for (uint8_t i = 0; i < MAX_LR_NODEMASK_LENGTH; ++i, ++plucBitmaskArray)
+      {
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Bitmask array byte %03d = 0x%02X\r\n", __FUNCTION__, i, *plucBitmaskArray);
+
+      }
+    /////////////////////////////////////////////////////////////////////////////////////
   }
 }
 #endif
@@ -212,7 +231,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
   switch (pInputBuffer[0]) {
     /* Report which SerialAPI Setup commands are supported beside the SERIAL_API_SETUP_CMD_SUPPORTED */
     case SERIAL_API_SETUP_CMD_SUPPORTED:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_SUPPORTED\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_SUPPORTED)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_SUPPORTED);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_SUPPORTED */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_SUPPORTED |
        *              (SERIAL_API_SETUP_CMD_TX_STATUS_REPORT + SERIAL_API_SETUP_CMD_RF_REGION_GET + SERIAL_API_SETUP_CMD_RF_REGION_SET +
@@ -224,6 +243,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
                            | SERIAL_API_SETUP_CMD_RF_REGION_SET | SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET
                            | SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET | SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE
                            | SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET | SERIAL_API_SETUP_CMD_SUPPORTED;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[1] = 0x%02X (supported flags)\r\n", __FUNCTION__, pOutputBuffer[i-1]);
 
       /* Report all supported commands as bitmask of their values */
       uint8_t supportedBitmask[32];
@@ -251,11 +271,12 @@ void func_id_serial_api_setup(uint8_t inputLength,
          No commands after it. */
       for (int j = 0; j <= SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET / 8; j++) {
         pOutputBuffer[i++] = supportedBitmask[j];
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[%02d] = 0x%02X (supported bitmask)\r\n", __FUNCTION__, i-1, pOutputBuffer[i-1]);
       }
       break;
 
     case SERIAL_API_SETUP_CMD_TX_STATUS_REPORT:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_STATUS_REPORT\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_STATUS_REPORT)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_STATUS_REPORT);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_TX_STATUS_REPORT | EnableTxStatusReport */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_TX_STATUS_REPORT | cmdRes */
       if (SERIAL_API_SETUP_CMD_TX_STATUS_REPORT_CMD_LENGTH_MIN <= inputLength) {
@@ -269,7 +290,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
 
     /* Report RF region configuration */
     case SERIAL_API_SETUP_CMD_RF_REGION_GET:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_RF_REGION_GET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_RF_REGION_GET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_RF_REGION_GET);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_RF_REGION_GET */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_RF_REGION_GET | rfRRegion */
       if (false == ReadApplicationRfRegion(&rfRegion)) {
@@ -277,11 +298,32 @@ void func_id_serial_api_setup(uint8_t inputLength,
         rfRegion = REGION_UNDEFINED;
       }
       pOutputBuffer[i++] = rfRegion;
+      switch (rfRegion)
+      {
+        case REGION_US:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X (REGION_US)\r\n", __FUNCTION__, rfRegion);
+          break;
+        case REGION_US_LR:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X (REGION_US_LR)\r\n", __FUNCTION__, rfRegion);
+          break;
+        case REGION_EU:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X (REGION_EU)\r\n", __FUNCTION__, rfRegion);
+          break;
+        case REGION_EU_LR:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X (REGION_EU_LR)\r\n", __FUNCTION__, rfRegion);
+          break;
+        case REGION_UNDEFINED:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X (REGION_UNDEFINED)\r\n", __FUNCTION__, rfRegion);
+          break;
+        default:
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rfRegion = 0x%02X\r\n", __FUNCTION__, rfRegion);
+          break;
+      }
       break;
 
     /* Set RF region configuration */
     case SERIAL_API_SETUP_CMD_RF_REGION_SET:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_RF_REGION_SET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_RF_REGION_SET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_RF_REGION_SET);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_RF_REGION_SET | rfRegion */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_RF_REGION_SET | cmdRes */
       if (SERIAL_API_SETUP_CMD_RF_REGION_SET_CMD_LENGTH_MIN <= inputLength) {
@@ -299,7 +341,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     {
       uint8_t supported_region_count = 0;
       uint8_t region_count_index = i;
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_GET_SUPPORTED_REGION\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_GET_SUPPORTED_REGION)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_GET_SUPPORTED_REGION);
       i++; //skip suported region count, move to first region value;
       for (rfRegion = REGION_2CH_FIRST; rfRegion < REGION_2CH_END; rfRegion++) {
         if (true == isRfRegionValid(rfRegion)) {
@@ -322,7 +364,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     case SERIAL_API_SETUP_CMD_GET_REGION_INFO:
     {
       uint8_t info_idx;
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_GET_REGION_INFO\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_GET_REGION_INFO)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_GET_REGION_INFO);
       //search for the requested region in the regions_info table.
       for (info_idx = 0; info_idx < REGIONS_INFO_COUNT; info_idx++) {
         if (regions_info[info_idx].region == pInputBuffer[SAPI_SETUP_GET_REGION_INFO_RX_IDX_REGION]) {
@@ -344,7 +386,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     {
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iAdjust;
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_SET | NormalTxPowerLevel | Measured0dBmPower
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_SET | cmdRes
@@ -366,7 +408,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
     }
 
     case SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_GET
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_GET | NormalTxPowerLevel | Measured0dBmPower
@@ -400,7 +442,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iAdjust;
       zpal_tx_power_t iTxPowerMaxSupported;
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_16_BIT\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_16_BIT)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_16_BIT);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_SET | NormalTxPowerLevel (MSB) |NormalTxPowerLevel (LSB) | Measured0dBmPower (MSB)| Measured0dBmPower (LSB)
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_SET | cmdRes
@@ -427,12 +469,14 @@ void func_id_serial_api_setup(uint8_t inputLength,
     }
 
     case SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_POWERLEVEL_GET_16_BIT);
       /**
        *  HOST->ZW: SERIAL_API_SETUP_CMD_TX_POWER_GET_2
        *  ZW->HOST: SERIAL_API_SETUP_CMD_TX_POWER_GET_2 | NormalTxPowerLevel (16bit) | Measured0dBmPower (16bit)
        */
       ReadApplicationTxPowerlevel(&iPowerLevel, &iPower0dbmMeasured);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: iPowerLevel        = 0x%04X \r\n", __FUNCTION__, iPowerLevel);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: iPower0dbmMeasured = 0x%04X \r\n", __FUNCTION__, iPower0dbmMeasured);
       pOutputBuffer[i++] = (uint8_t)((iPowerLevel >> 8) & 0xFF); // Big-endian
       pOutputBuffer[i++] = (uint8_t)(iPowerLevel & 0xFF);
       pOutputBuffer[i++] = (uint8_t)((iPower0dbmMeasured >> 8) & 0xFF);
@@ -440,18 +484,20 @@ void func_id_serial_api_setup(uint8_t inputLength,
       break;
 
     case SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_GET_MAX_PAYLOAD_SIZE);
       pOutputBuffer[i++] = (uint8_t)ZAF_getAppHandle()->pNetworkInfo->MaxPayloadSize;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Max payload size = 0x%02X \r\n", __FUNCTION__, pOutputBuffer[i-1]);
       break;
 
     case SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_TX_GET_MAX_LR_PAYLOAD_SIZE);
       pOutputBuffer[i++] = (uint8_t)ZAF_getAppHandle()->pLongRangeInfo->MaxLongRangePayloadSize;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Max LR payload size = 0x%02X \r\n", __FUNCTION__, pOutputBuffer[i-1]);
       break;
 
     /* Set the Node ID base type */
     case SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET);
       /* HOST->ZW: SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET | type */
       /* ZW->HOST: SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET | cmdRes */
       nodeIdBaseType = SERIAL_API_SETUP_NODEID_BASE_TYPE_DEFAULT;
@@ -460,10 +506,24 @@ void func_id_serial_api_setup(uint8_t inputLength,
            && (SERIAL_API_SETUP_NODEID_BASE_TYPE_LAST > pInputBuffer[1]) ) {
         /* Set the global Node ID base type if input value is valid */
         nodeIdBaseType = pInputBuffer[1];
+        ////////////////////////////////////////////////////////////////////////////
+        /// TEST MAB 2025.10.21
+        /// Display Node ID base type (i.e. 8- or 16-bit)
+        if (SERIAL_API_SETUP_NODEID_BASE_TYPE_8_BIT == nodeIdBaseType)
+          {
+            ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[1] = 0x%02X (SERIAL_API_SETUP_NODEID_BASE_TYPE_8_BIT)\r\n", __FUNCTION__, SERIAL_API_SETUP_NODEID_BASE_TYPE_8_BIT);
+          }
+        else
+          {
+            ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[1] = 0x%02X (SERIAL_API_SETUP_NODEID_BASE_TYPE_16_BIT)\r\n", __FUNCTION__, SERIAL_API_SETUP_NODEID_BASE_TYPE_16_BIT);
+          }
+        ////////////////////////////////////////////////////////////////////////////
         SaveApplicationNodeIdBaseType(nodeIdBaseType);
         cmdRes = true;
       }
       pOutputBuffer[i++] = cmdRes;
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_NODEID_BASETYPE_SET);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[1] = 0x%02X\r\n", __FUNCTION__, cmdRes);
       break;
     case SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_SET:
     {
@@ -474,7 +534,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       zpal_tx_power_t iTxPower;
       zpal_tx_power_t iTxPowerMaxSupported;
 
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_SET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_SET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_SET);
       if (SERIAL_API_SETUP_CMD_TX_POWERLEVEL_SET_CMD_LENGTH_MIN <= inputLength) {
         iTxPower = (zpal_tx_power_t)GET_16BIT_VALUE(&pInputBuffer[1]);
         iTxPowerMaxSupported = GetMaxSupportedTxPower();
@@ -499,8 +559,9 @@ void func_id_serial_api_setup(uint8_t inputLength,
        */
     {
       int16_t readout = 0;
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pInputBuffer[0] = SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET);
       ReadApplicationMaxLRTxPwr(&readout);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: readout = 0x%02X \r\n", __FUNCTION__, readout);
       pOutputBuffer[i++] = (uint8_t)((readout >> 8) & 0xFF);
       pOutputBuffer[i++] = (uint8_t)(readout & 0xFF);
     }
@@ -528,24 +589,46 @@ void func_id_serial_api_get_nvr(__attribute__((unused)) uint8_t inputLength,
   uint8_t bLength = pInputBuffer[1];
   uint8_t  dataLen = 0;
   if (PUK_OFFSET == offset) {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: offset = 0x%02X (PUK_OFFSET)\r\n", __FUNCTION__, offset);
     dataLen = bLength;
     if (TOKEN_MFG_ZW_PUK_SIZE < bLength) {
       dataLen = TOKEN_MFG_ZW_PUK_SIZE;
     }
     ZW_GetMfgTokenData(pOutputBuffer, TOKEN_MFG_ZW_PUK_ID, dataLen);
+    ////////////////////////////////////////////////////////////////////////////////////
+    /// TEST MAB 2025.10.21
+    /// Display retrieved NVR data
+    uint8_t* plucNVRByte = pOutputBuffer;
+    for (uint8_t i = 0; i < dataLen; ++i, ++plucNVRByte)
+      {
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: NVR byte %02d = 0x%02X\r\n", __FUNCTION__, i, *plucNVRByte);
+      }
+    ////////////////////////////////////////////////////////////////////////////////////
   } else if (PRK_OFFSET == offset) {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: offset = 0x%02X (PRK_OFFSET)\r\n", __FUNCTION__, offset);
     dataLen = bLength;
     if (TOKEN_MFG_ZW_PRK_SIZE < bLength) {
       dataLen = TOKEN_MFG_ZW_PRK_SIZE;
     }
     ZW_GetMfgTokenData(pOutputBuffer, TOKEN_MFG_ZW_PRK_ID, dataLen);
+    ////////////////////////////////////////////////////////////////////////////////////
+    /// TEST MAB 2025.10.21
+    /// Display retrieved NVR data
+    uint8_t* plucNVRByte = pOutputBuffer;
+    for (uint8_t i = 0; i < dataLen; ++i, ++plucNVRByte)
+      {
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: NVR byte %02d = 0x%02X\r\n", __FUNCTION__, i, *plucNVRByte);
+      }
+    ////////////////////////////////////////////////////////////////////////////////////
   } else if (HW_VER_OFFSET == offset) {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: offset = 0x%02X (HW_VER_OFFSET)\r\n", __FUNCTION__, offset);
     dataLen = bLength;
     if (HW_VER_SIZE < bLength) {
       dataLen = HW_VER_SIZE;
     }
     *pOutputBuffer = 0xFF;
   }
+  ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: length = 0x%02X\r\n", __FUNCTION__, dataLen);
   *pOutputLength = dataLen;
 }
 

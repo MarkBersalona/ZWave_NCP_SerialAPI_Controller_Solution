@@ -8,6 +8,7 @@
 #include <utils.h>
 #include <app.h>
 #include <ZAF_Common_interface.h>
+#include "zpal_log.h"
 
 static TaskHandle_t task_handle;
 
@@ -69,6 +70,7 @@ uint8_t GetControllerCapabilities(void)
   assert(EQUEUENOTIFYING_STATUS_SUCCESS == QueueStatus);
   SZwaveCommandStatusPackage cmdStatus = { .eStatusType = EZWAVECOMMANDSTATUS_GET_CONTROLLER_CAPABILITIES };
   if (GetCommandResponse(&cmdStatus, cmdStatus.eStatusType)) {
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Controller capabilities byte = 0x%02X\r\n", __FUNCTION__, cmdStatus.Content.GetControllerCapabilitiesStatus.result);
     return cmdStatus.Content.GetControllerCapabilitiesStatus.result;
   }
   assert(false);
@@ -108,6 +110,16 @@ void GetNodeInfo(uint16_t NodeId, t_ExtNodeInfo* pNodeInfo)
   if (GetCommandResponse(&NodeInfo, NodeInfo.eStatusType)) {
     if (NodeInfo.Content.NodeInfoStatus.NodeId == NodeId) {
       memcpy(pNodeInfo, (uint8_t*)&NodeInfo.Content.NodeInfoStatus.extNodeInfo, sizeof(NodeInfo.Content.NodeInfoStatus.extNodeInfo));
+      ////////////////////////////////////////////////////////////////////////////////////////
+      /// TEST MAB 2025.10.21
+      /// Display payload contents
+      //ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: sizeof(NodeInfo.Content.NodeInfoStatus.extNodeInfo) = %d\r\n", __FUNCTION__, sizeof(NodeInfo.Content.NodeInfoStatus.extNodeInfo));
+      uint8_t * plucNodeInfo = (uint8_t*)&NodeInfo.Content.NodeInfoStatus.extNodeInfo;
+      for (uint8_t i = 0; i < sizeof(NodeInfo.Content.NodeInfoStatus.extNodeInfo); ++i, ++plucNodeInfo)
+        {
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: NodeInfo.Content.NodeInfoStatus.extNodeInfo[%d] = 0x%02X\r\n", __FUNCTION__, i, *plucNodeInfo);
+        }
+      ////////////////////////////////////////////////////////////////////////////////////////
       return;
     }
   }

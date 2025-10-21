@@ -11,6 +11,7 @@
 #include "zaf_config.h"
 #include "zw_version_config.h"
 #include "nvm_backup_restore.h"
+#include "zpal_log.h"
 
 #define CAPABILITIES_SIZE (8 + 32) // Info + supported commands
 
@@ -61,4 +62,13 @@ ZW_ADD_CMD(FUNC_ID_SERIAL_API_GET_CAPABILITIES)
   /*  SERIALAPI_MANUFACTURER_PRODUCT_TYPE1 | SERIALAPI_MANUFACTURER_PRODUCT_TYPE2 | */
   /*  SERIALAPI_MANUFACTURER_PRODUCT_ID1 | SERIALAPI_MANUFACTURER_PRODUCT_ID2 | FUNCID_SUPPORTED_BITMASK[] */
   Respond(frame->cmd, SERIALAPI_CAPABILITIES, sizeof(SERIALAPI_CAPABILITIES));
+  ///////////////////////////////////////////////////////////////////////////////////////
+  /// TEST MAB 2025.10.21
+  /// Display capabilities
+  uint8_t* plucCapabilities = SERIALAPI_CAPABILITIES;
+  for (uint8_t i = 0; i < sizeof(SERIALAPI_CAPABILITIES); ++i, ++plucCapabilities)
+    {
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: Capability byte %02d = 0x%02X\r\n", __FUNCTION__, i, *plucCapabilities);
+    }
+  ///////////////////////////////////////////////////////////////////////////////////////
 }
