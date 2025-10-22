@@ -394,6 +394,8 @@ static comm_interface_parse_result_t handle_checksum(uint8_t input, bool ack)
 
   /* Default values for ack == false */
   /* It means we are in the process of looking for an acknowledge to a callback request */
+  // MAB 2025.10.22 - Another way to think of it:
+  // comm_interface.c, SerialAPIStateHandler() state is stateTxSerial, stateCallbackTxSerial or stateCommandTxSerial
   /* Drop the new frame we received - we don't have time to handle it. */
   comm_interface_parse_result_t result = PARSE_IDLE;
   uint8_t response = CAN;
@@ -406,24 +408,26 @@ static comm_interface_parse_result_t handle_checksum(uint8_t input, bool ack)
     response = (input == checksum) ? ACK : NAK;
   }
   ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: rx_byte = 0x%02X\r\n", __FUNCTION__, input);
-  //ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= 0x%02X\r\n", __FUNCTION__, response);
   switch (response)
   {
     case ACK:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= ACK\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= ACK (checksum OK)\r\n", __FUNCTION__);
       break;
     case NAK:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= NAK\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= NAK (checksum error)\r\n", __FUNCTION__);
       break;
     case CAN:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= CAN\r\n", __FUNCTION__);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= CAN (unable to process received frame: received frame dropped)\r\n", __FUNCTION__);
       break;
     default:
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: response= 0x%02X UNKNOWN\r\n", __FUNCTION__, input);
+      ZPAL_LOG_WARNING(ZPAL_LOG_APP, "%s: response= 0x%02X UNKNOWN\r\n", __FUNCTION__, response);
       break;
   }
   ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: comm_interface.state = COMM_INTERFACE_STATE_SOF\r\n", __FUNCTION__);
 
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Send ACK (checksum OK), NAK (checksum error) or CAN (unable to process received frame: received frame dropped)
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   comm_interface_transmit(&comm_interface.transport, &response, sizeof(response), NULL);
 
   return result;
@@ -485,8 +489,8 @@ comm_interface_parse_result_t comm_interface_parse_data(bool ack)
       default:
         handle_default();
         break;
-    }
-  }
+    } // end switch
+  } // end while
 
   /* Check for timeouts - if no other events detected */
   if (result == PARSE_IDLE) {
