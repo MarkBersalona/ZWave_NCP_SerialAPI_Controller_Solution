@@ -561,7 +561,7 @@ void func_id_serial_api_setup(uint8_t inputLength,
       int16_t readout = 0;
       ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: pOutputBuffer[0] = 0x%02X (SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET)\r\n", __FUNCTION__, SERIAL_API_SETUP_CMD_MAX_LR_TX_PWR_GET);
       ReadApplicationMaxLRTxPwr(&readout);
-      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: readout = 0x%02X \r\n", __FUNCTION__, readout);
+      ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: readout = 0x%04X \r\n", __FUNCTION__, readout);
       pOutputBuffer[i++] = (uint8_t)((readout >> 8) & 0xFF);
       pOutputBuffer[i++] = (uint8_t)(readout & 0xFF);
     }

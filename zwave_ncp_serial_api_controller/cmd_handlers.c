@@ -1409,7 +1409,7 @@ static void AddNodeDskToNetwork(uint8_t mode, const uint8_t* pDsk, void (*pCallB
 ZW_ADD_CMD(FUNC_ID_ZW_ADD_NODE_TO_NETWORK)
 {
   /* HOST->ZW: mode | funcID */
-  /* HOST->ZW: mode = 0x4A | funcID | DSK[0] | DSK[1] | DSK[2] | DSK[3] | DSK[4] | DSK[5] | DSK[6] | DSK[7] */
+  /* ZW->HOST: mode = 0x4A | funcID | DSK[0] | DSK[1] | DSK[2] | DSK[3] | DSK[4] | DSK[5] | DSK[6] | DSK[7] */
   if (ZW_NodeManagementRunning() && ((frame->payload[0] & ADD_NODE_MODE_MASK) != ADD_NODE_STOP)) {
     // A previous node management request is still in progress. Drop this request and go back to idle state.
     ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: *** WARNING *** A previous node management request is still in progress. Drop this request and go back to idle state.\r\n", __FUNCTION__);
@@ -1424,6 +1424,43 @@ ZW_ADD_CMD(FUNC_ID_ZW_ADD_NODE_TO_NETWORK)
                         (funcID_ComplHandler_ZW_NodeManagement != 0) ? &ZCB_ComplHandler_ZW_NodeManagement : NULL);
   } else {
     ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: frame->payload[0] == 0x%02X\r\n", __FUNCTION__, frame->payload[0]);
+    switch (frame->payload[0])
+    {
+      case ADD_NODE_ANY:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_ANY\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_CONTROLLER:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_CONTROLLER\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_SLAVE:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_SLAVE\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_EXISTING:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_EXISTING\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_STOP:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_STOP\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_STOP_FAILED:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_STOP_FAILED\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_RESERVED:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_RESERVED\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_HOME_ID:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_HOME_ID\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_SMART_START:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_SMART_START\r\n", __FUNCTION__);
+        break;
+      case ADD_NODE_MAX:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - ADD_NODE_MAX\r\n", __FUNCTION__);
+        break;
+      default:
+        ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: - *** WARNING *** unknown value\r\n", __FUNCTION__);
+        break;
+    }
+    ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: frame->payload[1] == 0x%02X\r\n", __FUNCTION__, frame->payload[1]);
     AddNodeToNetwork(frame->payload[0],
                      (funcID_ComplHandler_ZW_NodeManagement != 0) ? &ZCB_ComplHandler_ZW_NodeManagement : NULL);
   }

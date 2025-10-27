@@ -600,8 +600,8 @@ static void SerialAPIStateHandler(void)
         ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: stateTxSerial\r\n", __FUNCTION__);
         /* Wait for ACK on send respond. Retransmit as needed */
         if ((conVal = comm_interface_parse_data(false)) == PARSE_FRAME_SENT) {
-          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: RES transmitted succesfully\r\n", __FUNCTION__);
-          /* One more RES transmitted succesfully */
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: RES transmitted successfully\r\n", __FUNCTION__);
+          /* One more RES transmitted successfully */
           retry = 0;
           set_state_and_notify(stateIdle);
         } else if (conVal == PARSE_TX_TIMEOUT) {
@@ -626,8 +626,8 @@ static void SerialAPIStateHandler(void)
         /* Wait for ack on unsolicited event (callback etc.) */
         /* Retransmit as needed. Remove frame from callbackQueue when done */
         if ((conVal = comm_interface_parse_data(false)) == PARSE_FRAME_SENT) {
-          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: REQ transmitted succesfully\r\n", __FUNCTION__);
-          /* One more REQ transmitted succesfully */
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: REQ transmitted successfully\r\n", __FUNCTION__);
+          /* One more REQ transmitted successfully */
           PopCallBackQueue();
         } else if (conVal == PARSE_TX_TIMEOUT) {
           /* Either a NAK has been received or we timed out waiting for ACK */
@@ -650,8 +650,8 @@ static void SerialAPIStateHandler(void)
         /* Wait for ack on unsolicited ApplicationCommandHandler event */
         /* Retransmit as needed. Remove frame from comamndQueue when done */
         if ((conVal = comm_interface_parse_data(false)) == PARSE_FRAME_SENT) {
-          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: REQ transmitted succesfully\r\n", __FUNCTION__);
-          /* One more REQ transmitted succesfully */
+          ZPAL_LOG_DEBUG(ZPAL_LOG_APP, "%s: REQ transmitted successfully\r\n", __FUNCTION__);
+          /* One more REQ transmitted successfully */
           PopCommandQueue();
         } else if (conVal == PARSE_TX_TIMEOUT) {
           /* Either a NAK has been received or we timed out waiting for ACK */
