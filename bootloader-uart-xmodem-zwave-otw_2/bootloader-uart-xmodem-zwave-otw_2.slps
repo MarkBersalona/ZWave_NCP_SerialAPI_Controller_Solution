@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="ASCII"?>
+<model:MDescriptors xmlns:model="http://www.silabs.com/ss/Studio.ecore">
+  <descriptors name="bootloader-uart-xmodem-zwave-otw_2">
+    <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.sisdk:2025.6.2._-1463232186"/>
+    <properties key="universalConfig.relativeWorkspacePath" value="..\..\zwave_ncp_serial_api_controller_2\ZWave_NCP_SerialAPI_Controller_Solution.slcw"/>
+    <properties key="universalConfig.generationDirectory" value="F:\SiLabs_projects\ZWave_NCP_SerialAPI_Controller_Solution\bootloader-uart-xmodem-zwave-otw_2"/>
+    <properties key="universalConfig.toolchainCompatibility" value="iar gcc"/>
+    <properties key="projectCommon.overwriteCopiedSources" value="false"/>
+    <properties key="projectCommon.boardIds" value="brd4210a:0.0.0 brd4002a:0.0.0.A06"/>
+    <properties key="projectCommon.kitId" value=""/>
+    <properties key="projectCommon.partId" value="mcu.arm.efr32.zg23.efr32zg23b020f512im48"/>
+    <properties key="projectCommon.toolchainId" value="com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:12.2.1.20221205"/>
+    <properties key="universalConfig.projectTypeIds" value="com.silabs.ss.framework.ide.project.core.cdtMbsProjectType"/>
+    <properties key="projectCommon.importModeId" value="LINK_LIBRARIES"/>
+    <properties key="universalConfig.compSelProjInstanceId" value="1764599762305"/>
+  </descriptors>
+</model:MDescriptors>

@@ -3386,6 +3386,26 @@
 			<locationURI>STUDIO_SDK_LOC/platform/radio/rail_lib/plugin/pa-conversions/efr32xg23/sl_rail_util_pa_curves_20dbm.h</locationURI>
 		</link>
 		<link>
+			<name>simplicity_sdk_2025.6.2/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/inc/CC_MultilevelSwitch_Support.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/inc/CC_MultilevelSwitch_Support.h</locationURI>
+		</link>
+		<link>
+			<name>simplicity_sdk_2025.6.2/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/CC_MultilevelSwitch_Support.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/CC_MultilevelSwitch_Support.c</locationURI>
+		</link>
+		<link>
+			<name>simplicity_sdk_2025.6.2/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io.h</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io.h</locationURI>
+		</link>
+		<link>
+			<name>simplicity_sdk_2025.6.2/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io_weak.c</name>
+			<type>1</type>
+			<locationURI>STUDIO_SDK_LOC/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io_weak.c</locationURI>
+		</link>
+		<link>
 			<name>simplicity_sdk_2025.6.2/protocol/z-wave/platform/SiliconLabs/AppsHw/inc/ADC.h</name>
 			<type>1</type>
 			<locationURI>STUDIO_SDK_LOC/protocol/z-wave/platform/SiliconLabs/AppsHw/inc/ADC.h</locationURI>

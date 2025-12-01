@@ -187,7 +187,9 @@ Request(
   uint8_t len          /*IN   Length of data           */
   )
 {
+  // IF slot available in callback transmit queue
   if (callbackQueue.requestCnt < MAX_CALLBACK_QUEUE) {
+    // Add to callback transmit queue
     callbackQueue.requestCnt++;
     callbackQueue.requestQueue[callbackQueue.requestIn].wCmd = cmd;
     if (len > (uint8_t)BUF_SIZE_TX) {
@@ -196,6 +198,7 @@ Request(
     }
     callbackQueue.requestQueue[callbackQueue.requestIn].wLen = len;
     memcpy(&callbackQueue.requestQueue[callbackQueue.requestIn].wBuf[0], pData, len);
+    // Move queue input pointer to next slot
     if (++callbackQueue.requestIn >= MAX_CALLBACK_QUEUE) {
       callbackQueue.requestIn = 0;
     }
@@ -220,7 +223,9 @@ RequestUnsolicited(
   )
 {
   taskENTER_CRITICAL();
+  // IF slot available in command transmit queue
   if (commandQueue.requestCnt < MAX_UNSOLICITED_QUEUE) {
+    // Add to command transmit queue
     commandQueue.requestCnt++;
     commandQueue.requestQueue[commandQueue.requestIn].wCmd = cmd;
     if (len > (uint8_t)BUF_SIZE_TX) {
@@ -229,6 +234,7 @@ RequestUnsolicited(
     }
     commandQueue.requestQueue[commandQueue.requestIn].wLen = len;
     memcpy(&commandQueue.requestQueue[commandQueue.requestIn].wBuf[0], pData, len);
+    // Move queue input pointer to next slot
     if (++commandQueue.requestIn >= MAX_UNSOLICITED_QUEUE) {
       commandQueue.requestIn = 0;
     }
@@ -792,9 +798,6 @@ ApplicationInitSW(void)
   }
   compl_workbuf[6 + i] = capabilities;
 
-  //////////////////////////////////////////////////////////////////////////////////////////
-  // MAB 2025.10.09 - Reset info never gets stored in ZPAL_RETENTION_REGISTER_RESET_INFO
-  //////////////////////////////////////////////////////////////////////////////////////////
   uint32_t zpal_reset_info = 0;
   if (ZPAL_STATUS_OK != zpal_retention_register_read(ZPAL_RETENTION_REGISTER_RESET_INFO, &zpal_reset_info)) {
     ZPAL_LOG_ERROR(ZPAL_LOG_APP, "ERROR while reading the reset information\n");
@@ -844,7 +847,10 @@ ApplicationInit(
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////
   /// TEST MAB 2025.10.10
-  /// Disable VCOM_ENABLE (hopefully can still access VCOM TX/RX/RTS/CTS from the mainboard breakouts)
+  /// Disable VCOM_ENABLE
+  /// Enabling the call to sl_board_disable_vcom() disables the connection to the PC controller app,
+  /// so the prototype ZWave Sentinel firmware running on the STM32H745 Discovery board will control
+  /// the NCP Serial API controller solution, i.e. *this* firmware application.
   //sl_board_disable_vcom();
   /////////////////////////////////////////////////////////////////////////////////////////////////////
 

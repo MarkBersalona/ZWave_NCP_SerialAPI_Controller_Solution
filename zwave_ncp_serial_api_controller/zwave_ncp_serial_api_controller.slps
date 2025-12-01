@@ -3,7 +3,7 @@
   <descriptors name="zwave_ncp_serial_api_controller">
     <properties key="projectCommon.sdkId" value="com.silabs.sdk.stack.sisdk:2025.6.2._-1463232186"/>
     <properties key="universalConfig.relativeWorkspacePath" value="..\ZWave_NCP_SerialAPI_Controller_Solution.slcw"/>
-    <properties key="universalConfig.generationDirectory" value="F:\SiLabs_projects\ZWave_NCP_SerialAPI_Controller_Solution\zwave_ncp_serial_api_controller"/>
+    <properties key="universalConfig.generationDirectory" value=""/>
     <properties key="universalConfig.toolchainCompatibility" value="gcc"/>
     <properties key="projectCommon.overwriteCopiedSources" value="false"/>
     <properties key="projectCommon.boardIds" value="brd4002a:0.0.0.A06 brd4210a:0.0.0"/>

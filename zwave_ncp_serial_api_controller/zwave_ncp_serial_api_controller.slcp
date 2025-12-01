@@ -75,6 +75,7 @@ component:
 - {id: zw_app_timer_deep_sleep}
 - {id: zw_appshw_serialapi}
 - {id: zw_apputilities_minimal}
+- {id: zw_cc_multilevel_switch_support}
 - {id: zw_core}
 - {id: zw_dcdc_override}
 - {id: zw_role_type_central_static_controller}

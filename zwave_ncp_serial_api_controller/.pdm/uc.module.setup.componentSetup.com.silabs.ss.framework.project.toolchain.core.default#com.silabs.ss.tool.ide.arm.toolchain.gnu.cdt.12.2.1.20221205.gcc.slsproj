@@ -974,6 +974,18 @@
               <file name="zaf_protocol_config.h" uri="studio:/sdk/protocol/z-wave/ZAF/ProtocolConfig/inc/zaf_protocol_config.h"/>
             </folder>
           </folder>
+          <folder name="CommandClasses">
+            <folder name="MultilevelSwitch">
+              <folder name="src">
+                <file name="CC_MultilevelSwitch_Support.c" uri="studio:/sdk/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/CC_MultilevelSwitch_Support.c"/>
+                <file name="cc_multilevel_switch_support_io_weak.c" uri="studio:/sdk/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io_weak.c"/>
+                <file name="cc_multilevel_switch_support_io.h" uri="studio:/sdk/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/src/cc_multilevel_switch_support_io.h"/>
+              </folder>
+              <folder name="inc">
+                <file name="CC_MultilevelSwitch_Support.h" uri="studio:/sdk/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/inc/CC_MultilevelSwitch_Support.h"/>
+              </folder>
+            </folder>
+          </folder>
         </folder>
         <folder name="dist">
           <folder name="include">
@@ -1097,38 +1109,38 @@
       </folder>
     </folder>
   </folder>
-  <file name="app_node_info.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/app_node_info.c"/>
-  <file name="cmd_handlers_invoker.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmd_handlers_invoker.c"/>
-  <file name="cmd_handlers.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmd_handlers.c"/>
-  <file name="cmd_get_capabilities.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmd_get_capabilities.c"/>
-  <file name="cmds_dcdc.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_dcdc.c"/>
-  <file name="cmds_power_management.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_power_management.c"/>
-  <file name="cmds_management.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_management.c"/>
-  <file name="cmds_rf.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_rf.c"/>
-  <file name="cmds_security.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_security.c"/>
-  <file name="comm_interface.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/comm_interface.c"/>
-  <file name="nvm_backup_restore.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/nvm_backup_restore.c"/>
-  <file name="serialapi_file.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/serialapi_file.c"/>
-  <file name="app.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/app.c"/>
-  <file name="utils.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/utils.c"/>
-  <file name="virtual_slave_node_info.c" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/virtual_slave_node_info.c"/>
-  <file name="app_node_info.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/app_node_info.h"/>
-  <file name="cmd_handlers.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmd_handlers.h"/>
-  <file name="cmds_management.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_management.h"/>
-  <file name="cmds_rf.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_rf.h"/>
-  <file name="cmds_security.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/cmds_security.h"/>
-  <file name="comm_interface.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/comm_interface.h"/>
-  <file name="controller_supported_func.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/controller_supported_func.h"/>
-  <file name="nvm_backup_restore.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/nvm_backup_restore.h"/>
-  <file name="serialapi_file.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/serialapi_file.h"/>
-  <file name="app.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/app.h"/>
-  <file name="common_supported_func.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/common_supported_func.h"/>
-  <file name="slave_supported_func.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/slave_supported_func.h"/>
-  <file name="utils.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/utils.h"/>
-  <file name="virtual_slave_node_info.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/virtual_slave_node_info.h"/>
-  <file name="SerialAPI.h" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/SerialAPI.h"/>
-  <file name="zaf_config_security.h" linked="false" uri="studio:/sdk/protocol/z-wave/ZAF/configuration/inc/zaf_config_security.h"/>
-  <file name="README.md" linked="false" uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api/README.md"/>
+  <file name="app_node_info.c" linked="false" uri="studio:/project/app_node_info.c"/>
+  <file name="cmd_handlers_invoker.c" linked="false" uri="studio:/project/cmd_handlers_invoker.c"/>
+  <file name="cmd_handlers.c" linked="false" uri="studio:/project/cmd_handlers.c"/>
+  <file name="cmd_get_capabilities.c" linked="false" uri="studio:/project/cmd_get_capabilities.c"/>
+  <file name="cmds_dcdc.c" linked="false" uri="studio:/project/cmds_dcdc.c"/>
+  <file name="cmds_power_management.c" linked="false" uri="studio:/project/cmds_power_management.c"/>
+  <file name="cmds_management.c" linked="false" uri="studio:/project/cmds_management.c"/>
+  <file name="cmds_rf.c" linked="false" uri="studio:/project/cmds_rf.c"/>
+  <file name="cmds_security.c" linked="false" uri="studio:/project/cmds_security.c"/>
+  <file name="comm_interface.c" linked="false" uri="studio:/project/comm_interface.c"/>
+  <file name="nvm_backup_restore.c" linked="false" uri="studio:/project/nvm_backup_restore.c"/>
+  <file name="serialapi_file.c" linked="false" uri="studio:/project/serialapi_file.c"/>
+  <file name="app.c" linked="false" uri="studio:/project/app.c"/>
+  <file name="utils.c" linked="false" uri="studio:/project/utils.c"/>
+  <file name="virtual_slave_node_info.c" linked="false" uri="studio:/project/virtual_slave_node_info.c"/>
+  <file name="app_node_info.h" linked="false" uri="studio:/project/app_node_info.h"/>
+  <file name="cmd_handlers.h" linked="false" uri="studio:/project/cmd_handlers.h"/>
+  <file name="cmds_management.h" linked="false" uri="studio:/project/cmds_management.h"/>
+  <file name="cmds_rf.h" linked="false" uri="studio:/project/cmds_rf.h"/>
+  <file name="cmds_security.h" linked="false" uri="studio:/project/cmds_security.h"/>
+  <file name="comm_interface.h" linked="false" uri="studio:/project/comm_interface.h"/>
+  <file name="controller_supported_func.h" linked="false" uri="studio:/project/controller_supported_func.h"/>
+  <file name="nvm_backup_restore.h" linked="false" uri="studio:/project/nvm_backup_restore.h"/>
+  <file name="serialapi_file.h" linked="false" uri="studio:/project/serialapi_file.h"/>
+  <file name="app.h" linked="false" uri="studio:/project/app.h"/>
+  <file name="common_supported_func.h" linked="false" uri="studio:/project/common_supported_func.h"/>
+  <file name="slave_supported_func.h" linked="false" uri="studio:/project/slave_supported_func.h"/>
+  <file name="utils.h" linked="false" uri="studio:/project/utils.h"/>
+  <file name="virtual_slave_node_info.h" linked="false" uri="studio:/project/virtual_slave_node_info.h"/>
+  <file name="SerialAPI.h" linked="false" uri="studio:/project/SerialAPI.h"/>
+  <file name="zaf_config_security.h" linked="false" uri="studio:/project/zaf_config_security.h"/>
+  <file name="README.md" linked="false" uri="studio:/project/README.md"/>
   <file name="main.c" generated="true" linked="false"/>
   <file name="app_pm_transition_event.c" generated="true" linked="false"/>
   <includePath uri="studio:/project/"/>
@@ -1197,6 +1209,7 @@
   <includePath uri="studio:/sdk/protocol/z-wave/AppsHw/inc"/>
   <includePath uri="studio:/sdk/protocol/z-wave/platform/SiliconLabs/AppsHw/inc"/>
   <includePath uri="studio:/sdk/protocol/z-wave/Apps/zwave_ncp_serial_api"/>
+  <includePath uri="studio:/sdk/protocol/z-wave/ZAF/CommandClasses/MultilevelSwitch/inc"/>
   <includePath uri="studio:/sdk/protocol/z-wave/dist/include/zpal"/>
   <includePath uri="studio:/sdk/protocol/z-wave/Components/SwTimer"/>
   <includePath uri="studio:/sdk/protocol/z-wave/Components/Utils"/>
