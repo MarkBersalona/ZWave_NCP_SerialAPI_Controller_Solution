@@ -2,3 +2,13 @@
 *.o
 
 zwave_ncp_serial_api_controller/GNU ARM v12.2.1 - Default/
+
+zwave_ncp_serial_api_controller_2/
+
+zwave_ncp_serial_api_controller_3/
+
+zwave_ncp_serial_api_controller_4/
+
+bootloader-uart-xmodem-zwave-otw/
+
+bootloader-uart-xmodem-zwave-otw_3/
